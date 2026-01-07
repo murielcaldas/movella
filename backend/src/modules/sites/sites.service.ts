@@ -1,0 +1,46 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Site } from './site.entity';
+
+@Injectable()
+export class SitesService {
+  constructor(
+    @InjectRepository(Site)
+    private sitesRepo: Repository<Site>,
+  ) {}
+
+  findByUser(userId: number) {
+    return this.sitesRepo.find({ where: { user_id: userId } });
+  }
+
+  async create(userId: number, data: any) {
+    const site = this.sitesRepo.create({
+      user_id: userId,
+      ...data,
+    });
+    return this.sitesRepo.save(site);
+  }
+
+  findOne(id: number) {
+    return this.sitesRepo.findOne({ where: { id } });
+  }
+
+  async update(id: number, data: any) {
+    await this.sitesRepo.update(id, data);
+    return this.findOne(id);
+  }
+
+  async publish(id: number) {
+    await this.sitesRepo.update(id, { 
+      is_published: true,
+      published_at: new Date()
+    });
+    return this.findOne(id);
+  }
+
+  async remove(id: number) {
+    await this.sitesRepo.delete(id);
+    return { success: true };
+  }
+}
