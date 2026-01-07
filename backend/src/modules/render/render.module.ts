@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { RenderController } from './render.controller';
 import { RenderService } from './render.service';
-import { SitesModule } from '../sites/sites.module';
+import { Site } from '../sites/site.entity';
 
 @Module({
-  imports: [SitesModule],
+  imports: [TypeOrmModule.forFeature([Site])],
   controllers: [RenderController],
   providers: [RenderService],
 })
