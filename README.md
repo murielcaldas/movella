@@ -1,72 +1,45 @@
-# MOVELLA - MVP Funcional
+# MOVELLA - Sistema Completo
 
-## ✅ O QUE TEM NESTE PACOTE
+## 🎉 Parabéns!
 
-Este é um MVP FUNCIONAL MÍNIMO do Movella.
+Você tem o MVP do MOVELLA rodando no EasyPanel!
 
-Contém:
-- Backend NestJS básico (compila e roda)
-- Frontend Admin básico (compila e roda)
-- Frontend Sites básico (compila e roda)
-- Database SQL completo
-- Dockerfiles prontos
+## 📦 Estrutura
 
-## 🚀 COMO USAR
+- **backend/** - API NestJS
+- **frontend-admin/** - Painel administrativo
+- **frontend-sites/** - Sites públicos
+- **database/** - SQL do banco
 
-### 1. Fazer Upload no GitHub
+## 🚀 Já está rodando:
+
+✅ https://api.movella.com.br  
+✅ https://admin.movella.com.br  
+✅ https://*.movella.com.br  
+
+## 📝 Próximos Passos
+
+Leia o arquivo `PROXIMOS-PASSOS.md` para saber como expandir o sistema!
+
+## 🔧 Desenvolvimento Local
 
 ```bash
-cd movella-final
-git init
-git add .
-git commit -m "Movella MVP inicial"
-git remote add origin https://github.com/SEU_USUARIO/movella.git
-git push -u origin main
+# Clone seu repositório
+git clone https://github.com/murielcaldas/movella.git
+
+# Entre nas pastas e instale
+cd backend && npm install
+cd ../frontend-admin && npm install
+cd ../frontend-sites && npm install
 ```
 
-### 2. Criar Services no EasyPanel
+## 📖 Documentação
 
-**Backend API:**
-- Source: GitHub → movella
-- Build: Dockerfile em `backend/Dockerfile`
-- Port: 4000
-- Domain: api.movella.com.br
-- Env vars:
-  ```
-  DB_HOST=seu-mysql-service
-  DB_USERNAME=movella
-  DB_PASSWORD=M0v3ll@#2025$Pr0d
-  DB_DATABASE=movella_production
-  ```
+- [Próximos Passos](PROXIMOS-PASSOS.md)
+- [Backend](backend/README.md)
+- [Frontend Admin](frontend-admin/README.md)
+- [Frontend Sites](frontend-sites/README.md)
 
-**Frontend Admin:**
-- Source: GitHub → movella
-- Build: Dockerfile em `frontend-admin/Dockerfile`
-- Port: 3000
-- Domain: admin.movella.com.br
+---
 
-**Frontend Sites:**
-- Source: GitHub → movella
-- Build: Dockerfile em `frontend-sites/Dockerfile`
-- Port: 3000
-- Domain: *.movella.com.br
-
-### 3. Testar
-
-- API: https://api.movella.com.br
-- Admin: https://admin.movella.com.br
-
-## 📝 PRÓXIMOS PASSOS
-
-Este MVP compila e roda mas precisa dos módulos completos.
-
-Você pode:
-1. Adicionar módulos incrementalmente
-2. Usar a documentação que forneci
-3. Pedir ajuda para expandir
-
-## 🎯 OBJETIVO
-
-Fazer o sistema **COMPILAR e RODAR** no EasyPanel.
-
-Depois vamos adicionando features.
+**Sistema desenvolvido para validação MVP!**
