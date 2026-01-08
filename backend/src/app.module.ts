@@ -2,11 +2,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { MulterModule } from '@nestjs/platform-express';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { SitesModule } from './modules/sites/sites.module';
 import { TemplatesModule } from './modules/templates/templates.module';
 import { RenderModule } from './modules/render/render.module';
+import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
   imports: [
@@ -22,6 +24,9 @@ import { RenderModule } from './modules/render/render.module';
       synchronize: false,
       logging: false,
     }),
+    MulterModule.register({
+      dest: './uploads',
+    }),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET || 'movella-secret-key-change-in-production',
@@ -32,6 +37,7 @@ import { RenderModule } from './modules/render/render.module';
     SitesModule,
     TemplatesModule,
     RenderModule,
+    UploadModule,
   ],
 })
 export class AppModule {}
