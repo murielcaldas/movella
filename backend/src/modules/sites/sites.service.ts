@@ -33,21 +33,41 @@ export class SitesService {
     
     // Se está atualizando settings com novas imagens, deletar as antigas
     if (data.settings && oldSite.settings) {
-      const oldSettings = JSON.parse(oldSite.settings);
-      const newSettings = JSON.parse(data.settings);
-      
-      // Deletar logo antigo se mudou
-      if (oldSettings.logo_url && newSettings.logo_url && oldSettings.logo_url !== newSettings.logo_url) {
-        this.deleteFile(oldSettings.logo_url);
-      }
-      
-      // Deletar hero antigo se mudou
-      if (oldSettings.hero_background && newSettings.hero_background && oldSettings.hero_background !== newSettings.hero_background) {
-        this.deleteFile(oldSettings.hero_background);
+      try {
+        // Parse old settings se for string
+        const oldSettings = typeof oldSite.settings === 'string' 
+          ? JSON.parse(oldSite.settings) 
+          : oldSite.settings;
+        
+        // Parse new settings se for string
+        const newSettings = typeof data.settings === 'string'
+          ? JSON.parse(data.settings)
+          : data.settings;
+        
+        // Deletar logo antigo se mudou
+        if (oldSettings.logo_url && newSettings.logo_url && oldSettings.logo_url !== newSettings.logo_url) {
+          this.deleteFile(oldSettings.logo_url);
+        }
+        
+        // Deletar hero antigo se mudou
+        if (oldSettings.hero_background && newSettings.hero_background && oldSettings.hero_background !== newSettings.hero_background) {
+          this.deleteFile(oldSettings.hero_background);
+        }
+      } catch (err) {
+        console.error('Erro ao processar settings:', err);
       }
     }
     
-    await this.sitesRepo.update(id, data);
+    // Se settings já é string, usa direto, senão faz stringify
+    const settingsToSave = typeof data.settings === 'string' 
+      ? data.settings 
+      : JSON.stringify(data.settings);
+    
+    await this.sitesRepo.update(id, {
+      ...data,
+      settings: settingsToSave
+    });
+    
     return this.findOne(id);
   }
 
@@ -65,7 +85,9 @@ export class SitesService {
     // Deletar todas as imagens do site antes de deletar
     if (site && site.settings) {
       try {
-        const settings = JSON.parse(site.settings);
+        const settings = typeof site.settings === 'string'
+          ? JSON.parse(site.settings)
+          : site.settings;
         
         if (settings.logo_url) {
           this.deleteFile(settings.logo_url);
