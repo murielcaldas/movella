@@ -1,153 +1,21 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import {useState} from 'react';
+import {useRouter} from 'next/router';
+import Header from '../../components/Header';
 
-export default function NewSite() {
-  const [data, setData] = useState({
-    business_name: '',
-    subdomain: '',
-    business_category: '',
-    business_city: '',
-    whatsapp: '',
-  });
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+export default function NewSite(){
+  const router=useRouter();
+  const [saving,setSaving]=useState(false);
+  const [form,setForm]=useState({business_name:'',subdomain:'',whatsapp:'',business_category:'',business_city:''});
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    const token = localStorage.getItem('token');
-    
-    try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/sites', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + token,
-        },
-        body: JSON.stringify(data),
-      });
-      
-      if (res.ok) {
-        alert('Site criado com sucesso!');
-        router.push('/dashboard');
-      }
-    } catch (err) {
-      alert('Erro ao criar site');
-    }
-    setLoading(false);
+  const create=async()=>{
+    setSaving(true);
+    const token=localStorage.getItem('token');
+    try{
+      const res=await fetch('https://api.movella.com.br/api/sites',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(form)});
+      if(res.ok){alert('✅ Criado!');router.push('/dashboard');}else{alert('❌ Erro');}
+    }catch(e){alert('❌ '+e.message);}
+    setSaving(false);
   };
 
-  return (
-    <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-      <h1>➕ Criar Novo Site</h1>
-      
-      <form onSubmit={handleSubmit} style={{ marginTop: '2rem' }}>
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            Nome do Negócio:
-          </label>
-          <input
-            required
-            value={data.business_name}
-            onChange={(e) => setData({ ...data, business_name: e.target.value })}
-            style={{ width: '100%', padding: '0.5rem', fontSize: '16px' }}
-          />
-        </div>
-
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            Subdomínio:
-          </label>
-          <input
-            required
-            placeholder="meunegocio"
-            value={data.subdomain}
-            onChange={(e) => setData({ ...data, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '') })}
-            style={{ width: '100%', padding: '0.5rem', fontSize: '16px' }}
-          />
-          <small style={{ color: '#666' }}>
-            Seu site será: {data.subdomain || 'meunegocio'}.movella.com.br
-          </small>
-        </div>
-
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            Categoria:
-          </label>
-          <select
-            value={data.business_category}
-            onChange={(e) => setData({ ...data, business_category: e.target.value })}
-            style={{ width: '100%', padding: '0.5rem', fontSize: '16px' }}
-          >
-            <option value="">Selecione...</option>
-            <option value="servicos">Serviços Gerais</option>
-            <option value="salao">Salão / Estética</option>
-            <option value="petshop">Pet Shop</option>
-            <option value="restaurante">Restaurante</option>
-            <option value="profissional">Profissional Liberal</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            Cidade:
-          </label>
-          <input
-            value={data.business_city}
-            onChange={(e) => setData({ ...data, business_city: e.target.value })}
-            style={{ width: '100%', padding: '0.5rem', fontSize: '16px' }}
-          />
-        </div>
-
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            WhatsApp de Contato:
-          </label>
-          <input
-            required
-            placeholder="5548999999999"
-            value={data.whatsapp}
-            onChange={(e) => setData({ ...data, whatsapp: e.target.value })}
-            style={{ width: '100%', padding: '0.5rem', fontSize: '16px' }}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            background: '#667eea',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            marginTop: '1rem'
-          }}
-        >
-          {loading ? 'Criando...' : 'Criar Site'}
-        </button>
-        
-        <button
-          type="button"
-          onClick={() => router.push('/dashboard')}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            background: 'transparent',
-            border: '1px solid #ddd',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginTop: '0.5rem'
-          }}
-        >
-          Cancelar
-        </button>
-      </form>
-    </div>
-  );
+  return(<><Header/><div style={{width:'100vw',minHeight:'calc(100vh - 80px)',background:'#f5f7fa',padding:'2rem 5%'}}><div style={{maxWidth:'800px',margin:'0 auto',background:'#fff',borderRadius:'12px',padding:'2rem'}}><h1 style={{color:'#002177',marginBottom:'2rem'}}>➕ Criar Site</h1><input value={form.business_name} onChange={e=>setForm({...form,business_name:e.target.value})} placeholder="Nome" style={{width:'100%',padding:'0.75rem',marginBottom:'1rem',border:'2px solid #00b3ff',borderRadius:'8px',fontSize:'1rem'}}/><input value={form.subdomain} onChange={e=>setForm({...form,subdomain:e.target.value.toLowerCase()})} placeholder="Subdomínio" style={{width:'100%',padding:'0.75rem',marginBottom:'1rem',border:'2px solid #00b3ff',borderRadius:'8px',fontSize:'1rem'}}/><input value={form.whatsapp} onChange={e=>setForm({...form,whatsapp:e.target.value})} placeholder="WhatsApp" style={{width:'100%',padding:'0.75rem',marginBottom:'1rem',border:'2px solid #00b3ff',borderRadius:'8px',fontSize:'1rem'}}/><select value={form.business_category} onChange={e=>setForm({...form,business_category:e.target.value})} style={{width:'100%',padding:'0.75rem',marginBottom:'1rem',border:'2px solid #00b3ff',borderRadius:'8px',fontSize:'1rem'}}><option value="">Categoria</option><option value="servicos">Serviços</option><option value="salao">Salão</option><option value="petshop">Pet Shop</option></select><input value={form.business_city} onChange={e=>setForm({...form,business_city:e.target.value})} placeholder="Cidade" style={{width:'100%',padding:'0.75rem',marginBottom:'1rem',border:'2px solid #00b3ff',borderRadius:'8px',fontSize:'1rem'}}/><div style={{display:'flex',gap:'1rem',marginTop:'2rem'}}><button onClick={()=>router.push('/dashboard')} style={{flex:1,padding:'1rem',background:'#666',color:'#fff',border:'none',borderRadius:'8px',fontWeight:'bold',cursor:'pointer'}}>Cancelar</button><button onClick={create} disabled={saving} style={{flex:1,padding:'1rem',background:saving?'#ccc':'linear-gradient(135deg,#00b3ff,#0652f7)',color:'#fff',border:'none',borderRadius:'8px',fontWeight:'bold',cursor:saving?'not-allowed':'pointer'}}>{saving?'Criando...':'Criar'}</button></div></div></div></>);
 }
